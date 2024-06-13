@@ -46,7 +46,9 @@ def upload_file():
 
         model = YOLO('best.pt')
         # model = torch.hub.load('ultralytics/yolov8', 'custom', path='best.pt')
+        pritnt("mulai predict!")
         test = model.predict(filepath, save=True, show_labels=False, imgsz=640, iou=0.5)
+        print("selesai predict")
         
         predicted_filename ='predicted_' + filename
         predicted_image_path = os.path.join(app.config['UPLOAD_FOLDER'], predicted_filename)
