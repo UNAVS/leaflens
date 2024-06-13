@@ -13,6 +13,7 @@ app = Flask(__name__, instance_relative_config=True)
 
 @app.route('/')
 def index():
+    print("render brooo!")
     return render_template('index.html')
 
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'assets', 'uploads')
@@ -27,6 +28,8 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         model_kelas = tf.keras.models.load_model('ensembletop5.h5')
+
+        print("ini awal model")
 
         # Preprocess the uploaded image
         def preprocess_image(image_path):
@@ -46,7 +49,7 @@ def upload_file():
 
         model = YOLO('best.pt')
         # model = torch.hub.load('ultralytics/yolov8', 'custom', path='best.pt')
-        pritnt("mulai predict!")
+        print("mulai predict!")
         test = model.predict(filepath, save=True, show_labels=False, imgsz=640, iou=0.5)
         print("selesai predict")
         
