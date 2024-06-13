@@ -1,0 +1,500 @@
+{% extends 'base.html' %} {% block content %}
+<!-- Hero Section -->
+<section id="hero" class="hero section">
+  <div
+    class="container position-relative"
+    data-aos="fade-up"
+    data-aos-delay="100"
+  >
+    <div
+      class="d-flex flex-column justify-content-center"
+      style="height: 70svh"
+    >
+      <div
+        class="order-2 order-lg-1 d-flex flex-column justify-content-center align-items-center"
+      >
+        <div
+          class="d-flex flex-column align-items-center justify-content-center"
+        >
+          <div
+            class="text-bg-light d-flex justify-content-center align-items-center rounded-4"
+            style="width: fit-content"
+          >
+            <img
+              src="{{ url_for('static', filename= 'assets/img/logo.png') }}"
+              class="img-fluid"
+              width="156"
+              alt=""
+            />
+          </div>
+          <p
+            class="text-center"
+            style="font-size: 72px; font-family: 'Chelsea Market'; color: white"
+          >
+            LeafLens
+          </p>
+        </div>
+        <p class="fs-2 fw-light" style="color: white">
+          Deteksi Penyakit Tanaman Melalui Daun
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div
+    class="icon-boxes position-relative"
+    data-aos="fade-up"
+    data-aos-delay="200"
+  >
+    <div class="container position-relative">
+      <div class="row gy-4 mt-5">
+        <div class="col-xl-3 col-md-6">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-easel"></i></div>
+            <h4 class="title">
+              <a href="" class="stretched-link">Lorem Ipsum</a>
+            </h4>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-gem"></i></div>
+            <h4 class="title">
+              <a href="" class="stretched-link">Sed ut perspiciatis</a>
+            </h4>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-geo-alt"></i></div>
+            <h4 class="title">
+              <a href="" class="stretched-link">Magni Dolores</a>
+            </h4>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-command"></i></div>
+            <h4 class="title">
+              <a href="" class="stretched-link">Nemo Enim</a>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</section>
+<!-- /Hero Section -->
+
+<!-- About Section -->
+<section id="upload" class="about section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2 class="fw-bold">#Plant Disease Detection</h2>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <p
+        class="text-bg-white text-center shadow py-3 px-5 text-dark fs-5"
+        style="width: fit-content"
+      >
+        Upload an image of the leaf of the plant you want to know the disease
+        of.
+      </p>
+    </div>
+    <form
+      id="form"
+      action="/upload"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <div class="mt-5 d-flex flex-column align-items-center">
+        <input
+          type="file"
+          name="file"
+          id="file"
+          style="
+            opacity: 0;
+            width: 10%;
+            background-color: black;
+            position: absolute;
+          "
+        />
+
+        <label for="file" style="cursor: pointer">
+          <div
+            class="px-5 py-3 rounded-4 d-flex gap-2 align-items-center justify-content-center"
+            style="width: fit-content; background-color: #4a9c80"
+          >
+            <p class="fw-bold fs-3 text-light">Select Plant Images</p>
+            <img
+              src="{{ url_for('static', filename= 'assets/img/logo_gdrive.svg') }}"
+              width="48"
+              alt=""
+            />
+          </div>
+        </label>
+      </div>
+      <div class="mt-5 d-flex justify-content-center align-items-center gap-4">
+        {% if uploaded_filename %}
+        <div
+          class="d-flex flex-column align-items-center justify-content-center bg-light py-3 px-5"
+        >
+          <img
+            src="{{ url_for('uploaded_file', filename= uploaded_filename) }}"
+            width="300"
+            alt=""
+          />
+          <h3 class="fw-bold">Original Image</h3>
+          <p class="text-center text-dark fs-5" style="width: fit-content">
+            Unggahan Asli
+          </p>
+        </div>
+        {% endif %} {% if predicted_filename %}
+        <div
+          class="d-flex flex-column align-items-center justify-content-center bg-light py-3 px-5"
+        >
+          <img
+            src="{{ url_for('uploaded_file', filename=predicted_filename) }}"
+            width="300"
+            alt=""
+          />
+          <h3 class="fw-bold">{{nama}}</h3>
+          <p class="text-center text-dark fs-5" style="width: fit-content">
+            {{deskripsi}}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container mt-5">
+    <div
+      class="d-flex flex-column align-items-center justify-content-center shadow py-3 px-5"
+    >
+      <h1 class="fw-bold">Recomendation of Plant Disease</h1>
+      <p class="text-center text-dark fs-5" style="width: fit-content">
+        {{rekomendasi}}
+      </p>
+    </div>
+    <div
+      class="mt-5 d-flex flex-column align-items-center justify-content-center shadow py-3 px-5"
+    >
+      <h1 class="fw-bold">Prevention of Plant Disease</h1>
+      <p class="text-center text-dark fs-5" style="width: fit-content">
+        {{prevention}}
+      </p>
+    </div>
+  </div>
+</section>
+<!-- /About Section -->
+
+<!-- Services Section -->
+<section id="disease" class="services section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <div class="p-5 pt-0 d-flex justify-content-center align-items-center">
+      <div
+        class="px-5 py-3 rounded-4 d-flex flex-column gap-0 align-items-start justify-content-center"
+        style="width: fit-content; background-color: #4a9c80"
+      >
+        <p class="mb-0 fw-bold fs-3 text-light">#Let's Get to Know</p>
+        <p class="fw-bold fs-3 text-light">Microbial Diseases in Plants!</p>
+      </div>
+    </div>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/late blight.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Late Blight</h3>
+          <p>
+            Late blight disebabkan oleh jamur patogen Phytophthora infestans.
+            Penyakit ini sering terjadi selama pertumbuhan, perkembangan tanaman
+            dan mungkin muncul setelah pembungaan. Gejalanya meliputi dari daun
+            tertua, bermanifestasi sebagai bintik hijau dan abu-abu pada
+            permukaan daun. Seiring berkembangnya penyakit, bintik-bintik
+            menjadi gelap berwarna coklat atau hitam dan massa miselium putih
+            terbentuk di permukaan bawah daun.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/leaf spot.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Leaf Spots</h3>
+          <p>
+            Leaf spots dapat disebabkan oleh bakteri, jamur, atau virus.
+            Penyakit ini menyebabkan bintik-bintik pada daun tanaman. Bintik
+            daun mulai terlihat sekitar 1 minggu setelah pertama kali muncul.
+            Tepinya berwarna putih hingga putih keabu-abuan dan dikelilingi tepi
+            berwarna coklat kemerahan, kecoklatan, atau kekuningan. Mungkin ada
+            beberapa bintik kecil yang membesar seiring waktu, dan yang lainnya
+            mungkin menyatu atau bergabung menjadi bercak.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/rust leaf.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Rust Leaf</h3>
+          <p>
+            Rust leaf disebabkan oleh jamur dari keluarga Pucciniales dan
+            terdapat >4000 spesies Rust Leaf.Lesi pertama kali muncul sebagai
+            bintik putih dan sedikit menonjol pada epidermis bawah daun tanaman
+            dewasa atau tua. Seiring waktu, lesi ditutupi dengan massa spora
+            berwarna merah-oranye. Kemudian, pustula terbentuk dan berubah
+            menjadi kuning kehijauan dan akhirnya menjadi hitam.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/downy mildew.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Downy Mildew</h3>
+          <p>
+            Downy mildew disebakan oleh Plasmopara viticola kelompok oomycetes.
+            Penyakit ini bermanifestasi sebagai bercak kuning ke putih pada
+            permukaan atas daun dewasa. Daun yang terinfeksi berubah warna
+            menjadi coklat dan tipis serta mungkin rontok meskipun terdapat
+            kelembaban internal yang cukup. Penyakit ini tahan dingin dan
+            patogennya berada di tanaman dan tanah.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/powdery mildew.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Powdery Mildew</h3>
+          <p>
+            Powdery mildew merupakan penyakit tanaman yang disebabkan oleh
+            berbagai spesies jamur dari keluarga Erysiphaceae. Penyakit ini
+            muncul pada daun yang sedang bertunas dan membentuk lepuh yang
+            menyebabkan daun menggulung ke atas dan memperlihatkan epidermis
+            bagian bawah. Permukaan atas daun yang terinfeksi akhirnya tertutup
+            massa miselium halus berwarna putih hingga keabu-abuan, seperti
+            bedak.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/fire blight.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Fire Blight</h3>
+          <p>
+            Fire blight adalah penyakit bakteri patogen yang disebabkan oleh
+            Erwinia amylovora. Penyakit ini terutama mempengaruhi tanaman dari
+            keluarga Rosaceae, seperti apel, pir dan cotoneaster. Gejala yang
+            terjadi berupa layu dan menghitamnya daun dan ranting, seolah-olah
+            terbakar oleh api. Infeksi ini dapat menyebar cepat dalam kondisi
+            lembab dan hangat.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/early blight.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Early Blight</h3>
+          <p>
+            Early blight disebkan oleh jamur Alternaria solani. Penyakit ini
+            umumnya terjadi pada kentang dan tomat. Lesi pertama kali muncul
+            pada epidermis bawah daun tua. Gejalanya muncul sebagai
+            bintik-bintik coklat kecil yang terdiri dari cincin konsentris yang
+            disusun dalam pola tepat sasaran. Seiring berkembangnya penyakit,
+            lesi menyebar dan menyebabkan daun menguning, layu, dan mati.
+            Infeksi juga bisa menyebar ke bagian tanaman lainnya.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="p-3">
+            <img
+              src="{{ url_for('static', filename= 'assets/img/fungal/fusarium wilt.jpg') }}"
+              width="200px"
+              height="200px"
+              class="rounded-4"
+            />
+          </div>
+
+          <h3>Fusarium Wilt</h3>
+          <p>
+            Fusarium wilt disebabkan oleh jamur Fusarium oxysporum. Penyakit ini
+            menyerang kentang, tomat dan tanaman dari keluarga Solaneceae
+            lainnya. Gejalanya berupa daun berubah warna menjadi hijau muda
+            hingga kuning kehijauan atau coklat.
+          </p>
+        </div>
+      </div>
+      <!-- End Service Item -->
+    </div>
+  </div>
+</section>
+<!-- /Services Section -->
+
+<!-- Team Section -->
+<section id="member" class="team section">
+  <!-- Section Title -->
+  <div class="d-flex justify-content-center align-items-center"></div>
+  <div
+    class="container d-flex justify-content-center section-title"
+    data-aos="fade-up"
+  >
+    <div
+      class="px-5 py-3 rounded-4 d-flex gap-2 align-items-center justify-content-center"
+      style="width: fit-content; background-color: #4a9c80"
+    >
+      <p class="fw-bold fs-3 text-light">Our Members</p>
+    </div>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+      <div
+        class="col-xl-3 col-md-6 d-flex"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <div class="member">
+          <img
+            src="{{ url_for('static', filename= 'assets/img/team/hanip.jpg') }}"
+            width="225px"
+            height="250px"
+            class="rounded-4"
+            alt=""
+          />
+          <h4>Muhammad Hanif</h4>
+          <span>162112133001</span>
+        </div>
+      </div>
+      <!-- End Team Member -->
+      <div
+        class="col-xl-3 col-md-6 d-flex"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <div class="member">
+          <img
+            src="{{ url_for('static', filename= 'assets/img/team/lopi cantik.jpg') }}"
+            width="225px"
+            height="250px"
+            class="rounded-4"
+            alt=""
+          />
+          <h4>Atara Loveana W.</h4>
+          <span>162112133005</span>
+        </div>
+      </div>
+      <!-- End Team Member -->
+      <div
+        class="col-xl-3 col-md-6 d-flex"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <div class="member">
+          <img
+            src="{{ url_for('static', filename= 'assets/img/team/ahull.jpg') }}"
+            width="225px"
+            height="250px"
+            class="rounded-4"
+            alt=""
+          />
+          <h4>M. Rowahul Muslim</h4>
+          <span>162112133117</span>
+        </div>
+      </div>
+      <!-- End Team Member -->
+      <div
+        class="col-xl-3 col-md-6 d-flex"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
+        <div class="member">
+          <img
+            src="{{ url_for('static', filename= 'assets/img/team/pia.jpg') }}"
+            width="225px"
+            height="250px"
+            class="rounded-4"
+            alt=""
+          />
+          <h4>Vivia Faustine G.</h4>
+          <span>162112133020</span>
+        </div>
+      </div>
+      <!-- End Team Member -->
+    </div>
+  </div>
+</section>
+<!-- /Team Section -->
+
+{% endblock %}
