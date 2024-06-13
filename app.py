@@ -6,14 +6,14 @@ import numpy as np
 from PIL import Image
 from joblib import load
 from ultralytics import YOLO
-
+import logging
 
 
 app = Flask(__name__, instance_relative_config=True)
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/')
 def index():
-    print("render brooo!")
     return render_template('index.html')
 
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'assets', 'uploads')
@@ -23,30 +23,31 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 @app.route('/upload', methods = ['POST'])   
 def upload_file():   
     if request.method == 'POST':   
-        return "testing"
-        # f = request.files['file'] 
-        # filename = secure_filename(f.filename)
-        # filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        # f.save(filepath)
-        # model_kelas = tf.keras.models.load_model('ensembletop5.h5')
+        f = request.files['file'] 
+        filename = secure_filename(f.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        f.save(filepath)
+        app.logger.info("ini awal model")
+        model_kelas = tf.keras.models.load_model('ensembletop5.h5')
 
-        # print("ini awal model")
+        
 
-        # # Preprocess the uploaded image
-        # def preprocess_image(image_path):
-        #     with Image.open(image_path) as img:
-        #         img_rescaled = img.resize((256, 256))        
-        #         img_array = np.array(img_rescaled)
-        #         img_normalized = img_array / 255.0
-        #         img_expand = tf.expand_dims(img_normalized,0)
-        #         return img_expand
+        # Preprocess the uploaded image
+        def preprocess_image(image_path):
+            with Image.open(image_path) as img:
+                img_rescaled = img.resize((256, 256))        
+                img_array = np.array(img_rescaled)
+                img_normalized = img_array / 255.0
+                img_expand = tf.expand_dims(img_normalized,0)
+                return img_expand
 
-        # final_image = preprocess_image(filepath)
+        final_image = preprocess_image(filepath)
 
-        # # Make prediction
-        # predict1 = model_kelas.predict(final_image)
-        # class_index = np.argmax(predict1, axis=1)[0]
-        # nama = tentukan_nama(class_index)
+        # Make prediction
+        predict1 = model_kelas.predict(final_image)
+        class_index = np.argmax(predict1, axis=1)[0]
+        nama = tentukan_nama(class_index)
+        app.logger.info("ini akhir model")
 
         # model = YOLO('best.pt')
         # # model = torch.hub.load('ultralytics/yolov8', 'custom', path='best.pt')
@@ -54,16 +55,16 @@ def upload_file():
         # test = model.predict(filepath, save=True, show_labels=False, imgsz=640, iou=0.5)
         # print("selesai predict")
         
-        # predicted_filename ='predicted_' + filename
-        # predicted_image_path = os.path.join(app.config['UPLOAD_FOLDER'], predicted_filename)
+        predicted_filename ='predicted_' + filename
+        predicted_image_path = os.path.join(app.config['UPLOAD_FOLDER'], predicted_filename)
 
-        # deskripsi = determine_deskripsi(nama)
-        # rekomendasi = determine_rekomendasi(nama)
-        # prevention = determine_prevention(nama)
-        # print(filename, predicted_filename, deskripsi, nama, rekomendasi, prevention)
+        deskripsi = determine_deskripsi(nama)
+        rekomendasi = determine_rekomendasi(nama)
+        prevention = determine_prevention(nama)
+        print(filename, predicted_filename, deskripsi, nama, rekomendasi, prevention)
         
-        # # return data to template file
-        # return render_template("index.html", uploaded_filename = filename, predicted_filename = predicted_filename, deskripsi = deskripsi, nama = nama, rekomendasi = rekomendasi, prevention = prevention)
+        # return data to template file
+        return render_template("index.html", uploaded_filename = filename, predicted_filename = predicted_filename, deskripsi = deskripsi, nama = nama, rekomendasi = rekomendasi, prevention = prevention)
 
 def tentukan_nama(class_index):
     class_names = ['Downey-Mildew', 'Early-Blight', 'Fire-Blight', 'Fusarium-Wilt', 'Late-Blight', 'Leaf-Spot', 'Powdery-Mildew', 'Rust-Leafs', 'Sehat']
