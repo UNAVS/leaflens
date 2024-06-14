@@ -28,7 +28,8 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(filepath)
         app.logger.info("ini awal model")
-        model_kelas = tf.keras.models.load_model('ensembletop5.h5')
+        model_kelas = tf.keras.models.load_model('bagus.h5')
+        app.logger.info("sudah load")
 
         
 
@@ -42,6 +43,7 @@ def upload_file():
                 return img_expand
 
         final_image = preprocess_image(filepath)
+        app.logger.info("sudah process")
 
         # Make prediction
         predict1 = model_kelas.predict(final_image)
